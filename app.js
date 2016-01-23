@@ -40,7 +40,9 @@ MongoClient.connect('mongodb://localhost:27017/video', function(err, db) {
         { 'title': title, 'year': year, 'imdb': imdb },
         function (err, r) {
           assert.equal(null, err);
-          res.send("Document inserted with _id: " + r.insertedId);
+          db.collection('movies').find({}).toArray(function(err, docs) {
+              res.render('movies', { 'movies': docs } );
+          });
         }
       );
     });
