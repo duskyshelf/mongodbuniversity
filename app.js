@@ -36,15 +36,21 @@ MongoClient.connect('mongodb://localhost:27017/video', function(err, db) {
       var year = req.body.year;
       var imdb = req.body.imdb;
 
-      db.collection('movies').insertOne(
-        { 'title': title, 'year': year, 'imdb': imdb },
-        function (err, r) {
-          assert.equal(null, err);
-          db.collection('movies').find({}).toArray(function(err, docs) {
+      if (title == '' || year == '' || imdb == '') {
+        console.log("all fields must be filled");
+        res.redirect('/');
+      } else {
+        db.collection('movies').insertOne(
+          { 'title': title, 'year': year, 'imdb': imdb },
+          function (err, r) {
+            assert.equal(null, err);
+            db.collection('movies').find({}).toArray(function(err, docs) {
               res.render('movies', { 'movies': docs } );
-          });
-        }
-      );
+            });
+          }
+        );
+      }
+
     });
 
     app.use(function(req, res){
